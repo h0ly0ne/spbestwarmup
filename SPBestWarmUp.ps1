@@ -334,7 +334,10 @@ Function Installer() {
 
 Function WarmUp() {
     # Load plugin
-    Add-PSSnapIn Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
+    if ((Get-PSSnapin -registered "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue) -eq $null) 
+    {
+        Add-PSSnapin "Microsoft.SharePoint.PowerShell"
+    }
 
     # Warm up CMD parameter URLs
     $cmdurl | ForEach-Object { NavigateTo $_ }
@@ -617,7 +620,10 @@ if (!$skipadmincheck -and !([Security.Principal.WindowsPrincipal] [Security.Prin
 else {
     try {
         # SharePoint cmdlets
-        Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue | Out-Null
+    	if ((Get-PSSnapin -registered "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue) -eq $null) 
+    	{
+        	Add-PSSnapin "Microsoft.SharePoint.PowerShell"
+    	}
 
         # Task Scheduler
         $tasks = schtasks /query /fo csv | ConvertFrom-Csv
